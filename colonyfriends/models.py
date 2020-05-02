@@ -57,7 +57,7 @@ class Person(models.Model):
         app_label = 'colonyfriends'
 
 
-class Tags(models.Model):
+class Tag(models.Model):
 
     title = models.CharField(max_length=25)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='tags')
