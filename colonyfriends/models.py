@@ -11,28 +11,73 @@ class Company(models.Model):
 
 class Food(models.Model):
 
-    name = models.CharField(max_length=50)
+    APPLE_TYPE = 'apple'
+    BANANA_TYPE = 'banana'
+    ORANGE_TYPE = 'orange'
+    STRAWBERRY_TYPE = 'strawberry'
+
+    FRUIT_CHOICES = (
+        (APPLE_TYPE, 'apple'),
+        (BANANA_TYPE, 'banana'),
+        (ORANGE_TYPE, 'orange'),
+        (STRAWBERRY_TYPE, 'strawberry'),
+    )
+
+    BEETROOT_TYPE = 'beetroot'
+    CARROT_TYPE = 'carrot'
+    CELERY_TYPE = 'celery'
+    CUCUMBER_TYPE = 'cucumber'
+
+    VEGETABLE_CHOICES = (
+        (BEETROOT_TYPE, 'beetroot'),
+        (CARROT_TYPE, 'carrot'),
+        (CELERY_TYPE, 'celery'),
+        (CUCUMBER_TYPE, 'cucumber'),
+    )
+
+    FOOD_CHOICES = FRUIT_CHOICES + VEGETABLE_CHOICES
+
+    FRUIT_TYPE = 1
+    VEGETABLE_TYPE = 2
+
+    FOOD_TYPE_CHOICES = (
+        (FRUIT_TYPE, 1),
+        (VEGETABLE_TYPE, 2),
+    )
+
+    name = models.CharField(max_length=50, choices=FOOD_CHOICES)
+    type = models.IntegerField(choices=FOOD_TYPE_CHOICES)
 
     class Meta:
         app_label = 'colonyfriends'
 
+    def save(self, *args, **kwargs):
+
+        if self.name in dict(self.FRUIT_CHOICES):
+            self.type = self.FRUIT_TYPE
+
+        if self.name in dict(self.VEGETABLE_CHOICES):
+            self.type = self.VEGETABLE_TYPE
+
+        super(Food, self).save(*args, **kwargs)
+
 
 class Person(models.Model):
 
-    BLUE_EYE_COLOR = "blue"
-    BROWN_EYE_COLOR = "brown"
+    BLUE_EYE_COLOR = 'blue'
+    BROWN_EYE_COLOR = 'brown'
 
     EYE_COLOR_CHOICES = (
-        (BLUE_EYE_COLOR, "blue"),
-        (BROWN_EYE_COLOR, "brown"),
+        (BLUE_EYE_COLOR, 'blue'),
+        (BROWN_EYE_COLOR, 'brown'),
     )
 
-    FEMALE_GENDER = "female"
-    MALE_GENDER = "male"
+    FEMALE_GENDER = 'female'
+    MALE_GENDER = 'male'
 
     GENDER_CHOICES = (
-        (FEMALE_GENDER, "female"),
-        (MALE_GENDER, "male"),
+        (FEMALE_GENDER, 'female'),
+        (MALE_GENDER, 'male"'),
     )
 
     guid = models.CharField(max_length=36)
