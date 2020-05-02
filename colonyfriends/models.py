@@ -77,7 +77,7 @@ class Person(models.Model):
 
     GENDER_CHOICES = (
         (FEMALE_GENDER, 'female'),
-        (MALE_GENDER, 'male"'),
+        (MALE_GENDER, 'male'),
     )
 
     guid = models.CharField(max_length=36)
