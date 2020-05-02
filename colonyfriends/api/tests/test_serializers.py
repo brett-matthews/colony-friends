@@ -1,9 +1,14 @@
+from unittest.mock import patch
+
 from django.test import TestCase
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.serializers import ValidationError
 
 from colonyfriends.models import Company, Person
-from colonyfriends.api.serializers import PeopleInitSerializer
+from colonyfriends.api.serializers import (
+    PeopleInitSerializer, PeopleInitFriendsSerializer
+)
 
 
 class PeopleInitSerializerTest(TestCase):
@@ -15,7 +20,7 @@ class PeopleInitSerializerTest(TestCase):
             name='fake'
         )
 
-        payload = {
+        payload = [{
             "_id": "595eeb9b96d80a5bc7afb106",
             "index": 0,
             "guid": "5e71dc5d-61c0-4f3b-8b92-d77310c7fa43",
@@ -59,10 +64,12 @@ class PeopleInitSerializerTest(TestCase):
                 "banana",
                 "strawberry"
             ]
-        }
+        }]
 
-        serializer = PeopleInitSerializer(data=payload)
+        serializer = PeopleInitSerializer(data=payload, many=True)
 
+        serializer.is_valid()
+        print(serializer.errors)
         self.assertTrue(serializer.is_valid())
         serializer.save()
 
@@ -88,12 +95,13 @@ class PeopleInitSerializerTest(TestCase):
             ),
         )
 
-    def test_validate_company_id_invalid(self):
+    def test_validate_company_id_invalid_return_none(self):
 
-        serializer = PeopleInitSerializer()
-
-        self.assertRaises(
-            ValidationError, serializer.validate_company_id, 888
+        self.assertEqual(
+            None,
+            PeopleInitSerializer().validate_company_id(
+                888
+            ),
         )
 
     def test_validate_registered_valid(self):
@@ -116,3 +124,63 @@ class PeopleInitSerializerTest(TestCase):
         self.assertRaises(
             ValidationError, serializer.validate_registered, datetime_str
         )
+
+
+class PeopleInitFriendsSerializerTest(TestCase):
+
+    def setUp(self):
+
+        mock_person_get = patch('colonyfriends.api.serializers.Person.objects.get')
+        self.mock_person_get = mock_person_get.start()
+        self.addCleanup(mock_person_get.stop)
+
+    def test_import_valid_data(self):
+
+        Company.objects.create(
+            id=58,
+            name='fake'
+        )
+
+        payload = [{
+            "_id": "595eeb9b96d80a5bc7afb106",
+            "index": 0,
+            "guid": "5e71dc5d-61c0-4f3b-8b92-d77310c7fa43",
+            "has_died": True,
+            "balance": "$2,418.59",
+            "picture": "http://placehold.it/32x32",
+            "age": 61,
+            "eyeColor": "blue",
+            "name": "Carmella Lambert",
+            "gender": "female",
+            "company_id": 58,
+            "email": "carmellalambert@earthmark.com",
+            "phone": "+1 (910) 567-3630",
+            "address": "628 Sumner Place, Sperryville, American Samoa, 9819",
+            "about": "Non duis dolore ad enim. Est id reprehenderit cupidatat tempor excepteur. Cupidatat labore incididunt nostrud exercitation ullamco reprehenderit dolor eiusmod sit exercitation est. Voluptate consectetur est fugiat magna do laborum sit officia aliqua magna sunt. Culpa labore dolore reprehenderit sunt qui tempor minim sint tempor in ex. Ipsum aliquip ex cillum voluptate culpa qui ullamco exercitation tempor do do non ea sit. Occaecat laboris id occaecat incididunt non cupidatat sit et aliquip.\r\n",
+            "registered": "2016-07-13T12:29:07 -10:00",
+            "tags": [
+                "id",
+                "quis",
+                "ullamco",
+                "consequat",
+                "laborum",
+                "sint",
+                "velit"
+            ],
+            "friends": [
+                {
+                    "index": 1
+                }
+            ],
+            "greeting": "Hello, Carmella Lambert! You have 6 unread messages.",
+            "favouriteFood": [
+                "orange",
+                "apple",
+                "banana",
+                "strawberry"
+            ]
+        }]
+
+        serializer = PeopleInitFriendsSerializer(data=payload, many=True)
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
