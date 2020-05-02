@@ -23,7 +23,12 @@ class Command(BaseCommand):
             self.default_file = options['file']
 
         with open(self.default_file, 'rb') as f:
-            company_json = json.load(f)
+
+            try:
+                company_json = json.load(f)
+            except json.decoder.JSONDecodeError:
+                raise CommandError('Failure Input Invalid JSON')
+
             serializer = CompanyInitSerializer(data=company_json, many=True)
 
             if not serializer.is_valid():

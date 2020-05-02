@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 from io import StringIO
@@ -25,6 +26,11 @@ class InitCompaniesTest(TestCase):
         out = StringIO()
         call_command('init_companies', stdout=out)
         self.assertIn('Successfully Initialised Companies', out.getvalue())
+
+    def test_invalid_json_input(self):
+
+        self.mock_json_load.side_effect = json.decoder.JSONDecodeError(msg='fake', doc='', pos=1)
+        self.assertRaises(CommandError, call_command, 'init_companies')
 
     def test_command_failure_invalid_input(self):
 
