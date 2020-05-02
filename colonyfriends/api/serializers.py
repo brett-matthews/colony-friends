@@ -139,6 +139,8 @@ class PeopleInitFriendsSerializer(serializers.Serializer):
         person = Person.objects.get(id=validated_data['index'])
 
         for friend in friends:
+            if person.id == friend['index']:
+                continue
             person.friends.add(friend['index'])
 
         person.save()
