@@ -9,7 +9,7 @@ from colonyfriends.api.serializers import CompanyInitSerializer
 class Command(BaseCommand):
 
     help = 'Initialise Company Data From Structured JSON File'
-    default_file =  settings.BASE_DIR + '/assets/companies.json'
+    default_file = settings.BASE_DIR + '/assets/companies.json'
 
     def add_arguments(self, parser):
 
