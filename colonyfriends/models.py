@@ -43,7 +43,7 @@ class Person(models.Model):
     eye_colour = models.CharField(choices=EYE_COLOR_CHOICES, max_length=20)
     name = models.CharField(max_length=100)
     gender = models.CharField(choices=GENDER_CHOICES, max_length=20)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     email = models.CharField(max_length=200)
     phone = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
