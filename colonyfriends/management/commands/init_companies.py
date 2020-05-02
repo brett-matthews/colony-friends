@@ -31,7 +31,9 @@ class Command(BaseCommand):
 
             serializer = CompanyInitSerializer(data=company_json, many=True)
 
-            if not serializer.is_valid():
-                raise CommandError('Failure: {}'.format(serializer.errors))
-            else:
+            if serializer.is_valid():
+                serializer.save()
                 self.stdout.write(self.style.SUCCESS('Successfully Initialised Companies'))
+            else:
+                raise CommandError('Failure: {}'.format(serializer.errors))
+
