@@ -20,12 +20,16 @@ class CompanyEmployeeModelSerializer(serializers.ModelSerializer):
 
 class PeopleModelSerializer(serializers.ModelSerializer):
 
+    username = serializers.SerializerMethodField(method_name='get_username')
     fruits = serializers.SerializerMethodField(method_name='get_fruits')
     vegetables = serializers.SerializerMethodField(method_name='get_vegetables')
 
     class Meta:
         model = Person
-        fields = ['name', 'age', 'fruits', 'vegetables']
+        fields = ['username', 'age', 'fruits', 'vegetables']
+
+    def get_username(self, obj):
+        return obj.name
 
     def get_fruits(self, obj):
         return list(obj.favourite_foods.filter(type=Food.FRUIT_TYPE).values_list('name', flat=True))
