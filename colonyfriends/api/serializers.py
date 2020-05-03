@@ -52,6 +52,7 @@ class FriendPostCreateSerializer(FriendInitSerializer):
         self.context['person'].friends.add(self.validated_data['index'])
         return self.validated_data['index']
 
+
 class PeopleInitListSerializer(serializers.ListSerializer):
 
     post_create_friends_serializers = []
