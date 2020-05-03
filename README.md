@@ -74,6 +74,7 @@ http://localhost:8000/api/company/1/employees/
 http://localhost:8000/api/people/common-friends/?id=1,2,3&eye_colour=brown&has_died=0
 
 3. Given 1 person, provides a list of fruits and vegetables they like. This endpoint respects this interface for the output:
+ {"username": "Ahi", "age": "30", "fruits": ["banana", "apple"], "vegetables": ["beetroot", "lettuce"]}
 
 http://127.0.0.1:8000/api/people/1/
  
