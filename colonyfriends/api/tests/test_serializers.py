@@ -79,7 +79,6 @@ class FriendPostCreateSerializerTest(TestCase):
     def test_save_friend(self):
         serializer = FriendPostCreateSerializer(data={'index': 1}, context={'person': self.person1})
         serializer.is_valid()
-        print(serializer.errors)
         self.assertEqual(serializer.save(), 2)
 
 
