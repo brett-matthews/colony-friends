@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from colonyfriends.api.serializers import PeopleInitSerializer, PeopleInitFriendsSerializer
+from colonyfriends.api.serializers import PeopleInitSerializer
 
 
 class Command(BaseCommand):
@@ -39,12 +39,7 @@ class Command(BaseCommand):
                         raise CommandError('Invalid People Input: {}'.format(serializer.errors))
                     serializer.save()
 
-                    friend_serializer = PeopleInitFriendsSerializer(data=people_json, many=True)
-                    if not friend_serializer.is_valid():
-                        raise CommandError('Invalid People Input: {}'.format(serializer.errors))
-                    friend_serializer.save()
-
-        except IntegrityError as ex:
+        except (IntegrityError, KeyError) as ex:
             raise CommandError('Invalid People Input: {}'.format(ex))
 
         self.stdout.write(self.style.SUCCESS('Successfully Initialised People'))
