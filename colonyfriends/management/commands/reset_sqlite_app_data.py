@@ -20,3 +20,5 @@ class Command(BaseCommand):
                     table = m._meta.db_table
                     sqlstr = "delete from sqlite_sequence where name='{}';".format(table)
                     cursor.execute(sqlstr)
+
+        self.stdout.write(self.style.SUCCESS('Successfully Reset All App Data'))
