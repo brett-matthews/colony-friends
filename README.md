@@ -67,13 +67,13 @@ If using SQLite, it is possible to clear all the initialised data using this com
 ### API Spec
 1. Given a company, the API needs to return all their employees. Provide the appropriate solution if the company does not have any employees.
   
-  http://localhost:8000/api/company/1/employees/
+http://localhost:8000/api/company/1/employees/
  
  2. Given 2 people, provides their information (Name, Age, Address, phone) and the list of their friends in common which have brown eyes and are still alive. Where 1 and 2 are indexes of people as specified in source data. **note please see index in Data Assumption section**
  
-  http://localhost:8000/api/people/common-friends/?id=1,2,3&eye_colour=brown&has_died=0
+http://localhost:8000/api/people/common-friends/?id=1,2,3&eye_colour=brown&has_died=0
 
 3. Given 1 person, provides a list of fruits and vegetables they like. This endpoint respects this interface for the output:
 
-  http://127.0.0.1:8000/api/people/1/
+http://127.0.0.1:8000/api/people/1/
  
