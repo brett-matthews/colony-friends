@@ -30,6 +30,9 @@ class CompanyInitSerializer(serializers.Serializer):
     index = serializers.IntegerField()
     company = serializers.CharField()
 
+    def validate_index(self, value):
+        return value + 1
+
     def create(self, validated_data):
 
         company = Company.objects.create(
@@ -47,16 +50,19 @@ class FriendInitSerializer(serializers.Serializer):
 class FriendPostCreateSerializer(FriendInitSerializer):
 
     def validate_index(self, value):
+
         try:
-            Person.objects.get(id=value)
+            Person.objects.get(id=value + 1)
         except Person.DoesNotExist:
             raise serializers.ValidationError('Invalid Friend ID: {}'.format(value))
-        return value
+        return value + 1
 
     def save(self):
         if self.context['person'].id == self.validated_data['index']:
             return None
         self.context['person'].friends.add(self.validated_data['index'])
+        self.context['person'].save()
+
         return self.validated_data['index']
 
 
@@ -106,6 +112,8 @@ class PeopleInitListSerializer(serializers.ListSerializer):
                 food, created = Food.objects.get_or_create(name=f)
                 person.favourite_foods.add(food)
 
+            person.save()
+
             for f in friends:
                 serializer = FriendPostCreateSerializer(data=f, context={'person': person})
                 if not serializer.is_valid():
@@ -115,7 +123,6 @@ class PeopleInitListSerializer(serializers.ListSerializer):
                     continue
                 serializer.save()
 
-            person.save()
             created_people.append(person)
 
         for s in self.post_create_friends_serializers:
@@ -151,6 +158,9 @@ class PeopleInitSerializer(serializers.Serializer):
     friends = FriendInitSerializer(many=True)
 
     registered_datetime = None
+
+    def validate_index(self, value):
+        return value + 1
 
     def validate_company_id(self, value):
         try:
