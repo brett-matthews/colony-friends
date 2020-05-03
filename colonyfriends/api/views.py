@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from colonyfriends.models import Company, Person
 from colonyfriends.api.serializers import (
     CompanyEmployeeModelSerializer, PeopleCommonFriendsRequestSerializer,
-    PeopleCommonFriendsSerializer
+    PeopleCommonFriendsSerializer, PeopleModelSerializer
 )
 
 
@@ -73,3 +73,9 @@ class PeopleCommonFriendsView(APIView):
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset)
         return Response(serializer.data)
+
+
+class PeopleView(generics.RetrieveAPIView):
+
+    queryset = Person.objects.all()
+    serializer_class = PeopleModelSerializer
