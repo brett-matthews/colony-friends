@@ -18,6 +18,13 @@ class FoodModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CompanyEmployeeModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Person
+        fields = ['id', 'name', 'email', 'phone', 'address']
+
+
 class CompanyInitSerializer(serializers.Serializer):
 
     index = serializers.IntegerField()
