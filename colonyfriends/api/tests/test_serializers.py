@@ -35,7 +35,7 @@ class PeopleModelSerializerTest(TestCase):
         serializer = PeopleModelSerializer(person1)
 
         assertion = {
-            'name': 'fake',
+            'username': 'fake',
             'age': 10,
             'fruits': [
                 'apple',

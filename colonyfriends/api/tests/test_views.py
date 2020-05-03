@@ -1,4 +1,5 @@
 import datetime
+from unittest.mock import patch
 from django.urls import reverse
 
 from rest_framework import status
@@ -48,6 +49,12 @@ class PeopleCommonFriendsViewTest(APITestCase):
 
         self.url = reverse('people-common-friends')
         self.client = APIClient()
+
+        mock_get_common_friends = patch(
+            'colonyfriends.api.views.get_common_friends'
+        )
+        self.mock_get_common_friends = mock_get_common_friends.start()
+        self.addCleanup(mock_get_common_friends.stop)
 
     def test_url_exists(self):
         self.assertEqual(
