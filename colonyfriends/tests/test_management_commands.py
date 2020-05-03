@@ -194,7 +194,8 @@ class InitPeopleTest(TransactionTestCase):
 
         self.mock_json_load.return_value = self.valid_payload
 
-        call_command('init_people')
+        out = StringIO()
+        call_command('init_people', stdout=out)
 
         person1 = Person.objects.get(id=1)
 
