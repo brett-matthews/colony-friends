@@ -24,7 +24,6 @@ This guide assumes you are using MacOS
 - Activate virtualenv `source venv/bin/activate`
 - Install dependencies `pip install -r requirements.txt`
 
-
 ### Data Initialisation
 
 #### Assumption
@@ -47,4 +46,11 @@ If using SQLite, it is possible to clear all the initialised data using this com
 ```
   python manage.py reset_sqlite_app_data
 ```
+
+### Unit Tests
+`python manage.py test`
+
+### Running
+`python manage.py runserver`
+
 
