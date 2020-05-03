@@ -5,11 +5,48 @@ from django.test import TestCase
 
 from rest_framework.serializers import ValidationError
 
-from colonyfriends.models import Company, Person
+from colonyfriends.models import Company, Person, Food
 from colonyfriends.api.serializers import (
     PeopleInitSerializer, PeopleInitListSerializer,
-    FriendPostCreateSerializer
+    FriendPostCreateSerializer, PeopleModelSerializer
 )
+
+
+class PeopleModelSerializerTest(TestCase):
+
+    def test_fruits_vegetables_are_returned(self):
+
+        person1 = Person.objects.create(
+            id=1,
+            name='fake',
+            has_died=False,
+            balance=100.00,
+            age=10,
+            registered=datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=10)))
+        )
+        carrot = Food.objects.create(name='carrot')
+        apple = Food.objects.create(name='apple')
+        banana = Food.objects.create(name='banana')
+        person1.favourite_foods.add(
+            carrot, apple, banana
+        )
+        person1.save()
+
+        serializer = PeopleModelSerializer(person1)
+
+        assertion = {
+            'name': 'fake',
+            'age': 10,
+            'fruits': [
+                'apple',
+                'banana'
+            ],
+            'vegetables': [
+                'carrot'
+            ]
+        }
+
+        self.assertEqual(serializer.data, assertion)
 
 
 class FriendPostCreateSerializerTest(TestCase):
@@ -181,7 +218,6 @@ class PeopleInitSerializerTest(TestCase):
         serializer = PeopleInitSerializer(data=payload, many=True)
 
         serializer.is_valid()
-        print(serializer.errors)
         self.assertTrue(serializer.is_valid())
         serializer.save()
 
