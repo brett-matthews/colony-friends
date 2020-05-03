@@ -1,5 +1,3 @@
-from django.db.models import Q
-
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
@@ -11,6 +9,7 @@ from colonyfriends.api.serializers import (
     CompanyEmployeeModelSerializer, PeopleCommonFriendsRequestSerializer,
     PeopleCommonFriendsSerializer, PeopleModelSerializer
 )
+from colonyfriends.services import get_common_friends
 
 
 class CompanyEmployeeListView(generics.ListAPIView):
@@ -46,23 +45,9 @@ class PeopleCommonFriendsView(APIView):
         people = Person.objects.filter(id__in=people_ids)
         people_list = list(people)
 
-        eye_colour_query = Q()
-        if eye_colour_filter:
-            eye_colour_query = Q(eye_colour=eye_colour_filter)
-
-        has_died_query = Q()
-        if has_died_filter:
-            has_died_query = Q(has_died=has_died_filter)
-
-        first_query = people_list.pop().friends.filter(eye_colour_query & has_died_query)
-
-        friends_intersection = []
-        for p in people_list:
-            friends_intersection.append(
-                p.friends.filter(eye_colour_query & has_died_query)
-            )
-
-        common_friends = first_query.intersection(*friends_intersection)
+        common_friends = get_common_friends(
+            people=people_list, eye_colour_filter=eye_colour_filter, has_died_filter=has_died_filter
+        )
 
         return {'people': people, 'common_friends': common_friends}
 
