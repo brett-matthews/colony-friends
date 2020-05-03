@@ -31,10 +31,19 @@ This guide assumes you are using MacOS
 
 #### Steps
 Following on from the Installation Steps
-- Set settings file `export DJANGO_SETTINGS_MODULE=colonyfriends.settings`
-- Database migrate `python manage.py migrate`
-- `python manage.py init_companies`
-- `python manage.py init_people`
+Set settings file, migrate the database, initialise companies and initialise people 
+```
+  export DJANGO_SETTINGS_MODULE=colonyfriends.settings
+```
+```
+  python manage.py migrate
+```
+```
+  python manage.py init_companies
+```
+```
+  python manage.py init_people
+```
 
 #### Other files?
 The init_companies and init_people commands can accept an optional parameter to use a different path, example shown below.
@@ -48,9 +57,13 @@ If using SQLite, it is possible to clear all the initialised data using this com
 ```
 
 ### Unit Tests
-`python manage.py test`
+```
+  python manage.py test
+```
 
 ### Running
-`python manage.py runserver`
+```
+  python manage.py runserver
+```
 
 
