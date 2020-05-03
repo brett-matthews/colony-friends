@@ -4,13 +4,6 @@ from rest_framework import serializers
 from colonyfriends.models import Company, Food, Person, Tag
 
 
-class CompanyModelSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Company
-        fields = '__all__'
-
-
 class FoodModelSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -23,6 +16,22 @@ class CompanyEmployeeModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
         fields = ['id', 'name', 'email', 'phone', 'address']
+
+
+class PeopleModelSerializer(serializers.ModelSerializer):
+
+    fruits = serializers.SerializerMethodField(method_name='get_fruits')
+    vegetables = serializers.SerializerMethodField(method_name='get_vegetables')
+
+    class Meta:
+        model = Person
+        fields = ['name', 'age', 'fruits', 'vegetables']
+
+    def get_fruits(self, obj):
+        return list(obj.favourite_foods.filter(type=Food.FRUIT_TYPE).values_list('name', flat=True))
+
+    def get_vegetables(self, obj):
+        return list(obj.favourite_foods.filter(type=Food.VEGETABLE_TYPE).values_list('name', flat=True))
 
 
 class PeopleCommonFriendsRequestSerializer(serializers.Serializer):
