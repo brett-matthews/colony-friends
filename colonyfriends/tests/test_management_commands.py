@@ -196,25 +196,25 @@ class InitPeopleTest(TransactionTestCase):
 
         call_command('init_people')
 
-        person0 = Person.objects.get(id=0)
+        person1 = Person.objects.get(id=1)
 
         self.assertEqual(
-            person0.name,
+            person1.name,
             self.valid_payload[0]['name']
         )
 
         foods = []
-        for f in person0.favourite_foods.all():
+        for f in person1.favourite_foods.all():
             foods.append(f.name)
         self.assertEqual(
             foods,
             self.valid_payload[0]['favouriteFood']
         )
 
-        person1 = Person.objects.get(id=1)
+        person2 = Person.objects.get(id=2)
 
         self.assertEqual(
-            person1.friends.all().count(),
+            person2.friends.all().count(),
             1
         )
 
