@@ -21,7 +21,7 @@ def get_common_friends(people: List[Person], eye_colour_filter=None, has_died_fi
         eye_colour_query = Q(eye_colour=eye_colour_filter)
 
     has_died_query = Q()
-    if has_died_filter:
+    if has_died_filter is not None:
         has_died_query = Q(has_died=has_died_filter)
 
     first_query = people.pop().friends.filter(eye_colour_query & has_died_query)
