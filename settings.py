@@ -44,7 +44,7 @@ THIRD_PARTY_APPS = [
 ]
 
 INTERNAL_APPS = [
-    'colonyfriends',
+    'api',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + INTERNAL_APPS
