@@ -26,6 +26,25 @@ This guide assumes you are using MacOS
 
 
 ### Data Initialisation
-Following on from the above steps
-- `cd colonyfriends`
-- Database migrate `
+
+#### Assumption
+  It is expected that init_companies will always be run first before init_people.
+
+#### Steps
+Following on from the Installation Steps
+- Set settings file `export DJANGO_SETTINGS_MODULE=colonyfriends.settings`
+- Database migrate `python manage.py migrate`
+- `python manage.py init_companies`
+- `python manage.py init_people`
+
+#### Other files?
+The init_companies and init_people commands can accept an optional parameter to use a different path, example shown below.
+```
+  python manage.py init_people '/Users/johnsmith/repos/colony-friends/assets/companies.json'
+```
+#### Reset
+If using SQLite, it is possible to clear all the initialised data using this command.
+```
+  python manage.py reset_sqlite_app_data
+```
+
