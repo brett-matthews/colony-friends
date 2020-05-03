@@ -56,7 +56,7 @@ class PeopleCommonFriendsViewTest(APITestCase):
 
     def test_get_returns_200(self):
 
-        person1 = Person.objects.create(
+        Person.objects.create(
             id=1,
             has_died=False,
             balance=100.00,
