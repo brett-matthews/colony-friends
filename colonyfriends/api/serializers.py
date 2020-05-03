@@ -25,6 +25,23 @@ class CompanyEmployeeModelSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'email', 'phone', 'address']
 
 
+class PeopleCommonFriendsRequestSerializer(serializers.Serializer):
+    id = serializers.CharField()
+
+
+class PeopleCommonFriendsModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Person
+        fields = ['id', 'name', 'age', 'address', 'phone']
+
+
+class PeopleCommonFriendsSerializer(serializers.Serializer):
+
+    people = PeopleCommonFriendsModelSerializer(many=True)
+    common_friends = PeopleCommonFriendsModelSerializer(many=True)
+
+
 class CompanyInitSerializer(serializers.Serializer):
 
     index = serializers.IntegerField()
