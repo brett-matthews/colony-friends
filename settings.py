@@ -44,7 +44,7 @@ THIRD_PARTY_APPS = [
 ]
 
 INTERNAL_APPS = [
-    'api',
+    'colonyfriends',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + INTERNAL_APPS
@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'colonyfriends.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'colony-friends/db.sqlite3'),
     }
 }
 
