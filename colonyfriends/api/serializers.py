@@ -25,14 +25,102 @@ class CompanyInitSerializer(serializers.Serializer):
 
     def create(self, validated_data):
 
-        object = Company.objects.create(
+        company = Company.objects.create(
             id=validated_data['index'],
             name=validated_data['company']
         )
-        return object
+        return company
+
+
+class FriendInitSerializer(serializers.Serializer):
+
+    index = serializers.IntegerField()
+
+
+class FriendPostCreateSerializer(FriendInitSerializer):
+
+    def validate_index(self, value):
+        try:
+            Person.objects.get(id=value)
+        except Person.DoesNotExist:
+            raise serializers.ValidationError('Invalid Friend ID: {}'.format(value))
+        return value
+
+    def save(self):
+        if self.context['person'].id == self.validated_data['index']:
+            return None
+        self.context['person'].friends.add(self.validated_data['index'])
+        return self.validated_data['index']
+
+class PeopleInitListSerializer(serializers.ListSerializer):
+
+    post_create_friends_serializers = []
+
+    def _get_registered_date(self):
+        return self.child.registered_datetime
+
+    def _map_person_model_data(self, validated_data):
+
+        balance = validated_data.pop('balance').replace('$', '').replace(',', '')
+        validated_data.pop('registered')
+
+        return Person(
+            id=validated_data['index'],
+            eye_colour=validated_data['eyeColor'],
+            balance=balance,
+            registered=self._get_registered_date()
+        )
+
+    def create(self, validated_data):
+
+        created_people = []
+
+        for item in validated_data:
+
+            tags = item.pop('tags', [])
+            foods = item.pop('favouriteFood', [])
+            friends = item.pop('friends', [])
+
+            person = self._map_person_model_data(validated_data=item)
+
+            for key, value in item.items():
+                setattr(person, key, value)
+
+            person.save()
+
+            for t in tags:
+                Tag.objects.create(
+                    title=t,
+                    person=person
+                )
+
+            for f in foods:
+                food, created = Food.objects.get_or_create(name=f)
+                person.favourite_foods.add(food)
+
+            for f in friends:
+                serializer = FriendPostCreateSerializer(data=f, context={'person': person})
+                if not serializer.is_valid():
+                    self.post_create_friends_serializers.append(
+                        FriendPostCreateSerializer(data=f, context={'person': person})
+                    )
+                    continue
+                serializer.save()
+
+            person.save()
+            created_people.append(person)
+
+        for s in self.post_create_friends_serializers:
+            s.is_valid()
+            s.save()
+
+        return created_people
 
 
 class PeopleInitSerializer(serializers.Serializer):
+
+    class Meta:
+        list_serializer_class = PeopleInitListSerializer
 
     index = serializers.IntegerField()
     guid = serializers.CharField()
@@ -52,6 +140,7 @@ class PeopleInitSerializer(serializers.Serializer):
     tags = serializers.ListField()
     favouriteFood = serializers.ListField()
     greeting = serializers.CharField()
+    friends = FriendInitSerializer(many=True)
 
     registered_datetime = None
 
@@ -75,72 +164,3 @@ class PeopleInitSerializer(serializers.Serializer):
             raise serializers.ValidationError('Registered Invalid DateTime Input')
 
         return value
-
-    def _map_person_model_data(self, validated_data):
-
-        balance = validated_data.pop('balance').replace('$', '').replace(',', '')
-        validated_data.pop('registered')
-
-        return Person(
-            id=validated_data['index'],
-            eye_colour=validated_data['eyeColor'],
-            balance=balance,
-            registered=self.registered_datetime
-        )
-
-    def create(self, validated_data):
-
-        tags = validated_data.pop('tags', [])
-        foods = validated_data.pop('favouriteFood', [])
-
-        person = self._map_person_model_data(validated_data=validated_data)
-
-        for key, value in validated_data.items():
-            setattr(person, key, value)
-
-        person.save()
-
-        for t in tags:
-            Tag.objects.create(
-                title=t,
-                person=person
-            )
-
-        for f in foods:
-            food, created = Food.objects.get_or_create(name=f)
-            person.favourite_foods.add(food)
-
-        person.save()
-
-        return validated_data
-
-
-class FriendInitSerializer(serializers.Serializer):
-
-    index = serializers.IntegerField()
-
-    def validate_index(self, value):
-        try:
-            Person.objects.get(id=value)
-        except Person.DoesNotExist:
-            raise serializers.ValidationError('Invalid Friend ID: {}'.format(value))
-        return value
-
-
-class PeopleInitFriendsSerializer(serializers.Serializer):
-
-    index = serializers.IntegerField()
-    friends = FriendInitSerializer(many=True)
-
-    def create(self, validated_data):
-
-        friends = validated_data.pop('friends', [])
-
-        person = Person.objects.get(id=validated_data['index'])
-
-        for friend in friends:
-            if person.id == friend['index']:
-                continue
-            person.friends.add(friend['index'])
-
-        person.save()
