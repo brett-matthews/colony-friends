@@ -20,14 +20,14 @@ class FriendPostCreateSerializerTest(TestCase):
             has_died=False,
             balance=100.00,
             age=10,
-            registered=datetime.datetime.utcnow()
+            registered=datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=10)))
         )
         self.person2 = Person.objects.create(
             id=2,
             has_died=False,
             balance=100.00,
             age=10,
-            registered=datetime.datetime.utcnow()
+            registered=datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=10)))
         )
 
     def test_validate_index_invalid(self):
