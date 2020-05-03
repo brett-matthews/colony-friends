@@ -10,7 +10,23 @@ class GetCommonFriendServiceTest(TestCase):
     def setUp(self):
         self.company = Company.objects.create(id=1, name='fake')
 
-    def test_get_query_set_common_friends_no_common_friends(self):
+    def test_no_people_errors(self):
+        self.assertRaises(AssertionError, get_common_friends, [])
+
+    def test_one_person_errors(self):
+
+        person1 = Person.objects.create(
+            id=1,
+            has_died=False,
+            balance=100.00,
+            age=10,
+            registered=datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=10))),
+            company=self.company
+        )
+
+        self.assertRaises(AssertionError, get_common_friends, [person1])
+
+    def test_no_common_friends(self):
 
         person1 = Person.objects.create(
             id=1,
@@ -58,7 +74,7 @@ class GetCommonFriendServiceTest(TestCase):
 
         self.assertEqual(common_friends.count(), 0)
 
-    def test_get_query_set_common_friends_one_common_friend(self):
+    def test_one_common_friend(self):
 
         person1 = Person.objects.create(
             id=1,
