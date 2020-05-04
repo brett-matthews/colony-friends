@@ -194,11 +194,11 @@ class PeopleInitSerializer(serializers.Serializer):
 
     def validate_company_id(self, value):
         try:
-            Company.objects.get(pk=value)
+            Company.objects.get(pk=value + 1)
         except Company.DoesNotExist:
             # some people have a company that doesn't exist
             return None
-        return value
+        return value + 1
 
     def validate_registered(self, value):
         # colon in timezone poorly supported, parse to datetime manually

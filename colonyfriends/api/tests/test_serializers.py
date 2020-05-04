@@ -239,7 +239,7 @@ class PeopleInitSerializerTest(TestCase):
         self.assertEqual(
             company.id,
             PeopleInitSerializer().validate_company_id(
-                company.id
+                company.id - 1
             ),
         )
 
